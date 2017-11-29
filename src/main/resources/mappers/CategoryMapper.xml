@@ -9,32 +9,36 @@
       <arg column="status" jdbcType="BIT" javaType="java.lang.Boolean" />
       <arg column="sort_order" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="create_user" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_user" jdbcType="VARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, parent_id, name, status, sort_order, create_time, update_time
+    id, parent_id, name, status, sort_order, create_time, create_user, update_time, update_user
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from mmall_category
+    from baihui_category
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from mmall_category
+    delete from baihui_category
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.baihui.pojo.Category" >
-    insert into mmall_category (id, parent_id, name, 
+    insert into baihui_category (id, parent_id, name, 
       status, sort_order, create_time, 
-      update_time)
+      create_user, update_time, update_user
+      )
     values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
-      #{status,jdbcType=BIT}, #{sortOrder,jdbcType=INTEGER}, now(),
-     now())
+      #{status,jdbcType=BIT}, #{sortOrder,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.baihui.pojo.Category" >
-    insert into mmall_category
+    insert into baihui_category
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -54,8 +58,14 @@
       <if test="createTime != null" >
         create_time,
       </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
       <if test="updateTime != null" >
         update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -75,15 +85,21 @@
         #{sortOrder,jdbcType=INTEGER},
       </if>
       <if test="createTime != null" >
-       now(),
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null" >
-        now(),
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.baihui.pojo.Category" >
-    update mmall_category
+    update baihui_category
     <set >
       <if test="parentId != null" >
         parent_id = #{parentId,jdbcType=INTEGER},
@@ -100,27 +116,36 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
       <if test="updateTime != null" >
-        update_time = now(),
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.baihui.pojo.Category" >
-    update mmall_category
+    update baihui_category
     set parent_id = #{parentId,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},
       status = #{status,jdbcType=BIT},
       sort_order = #{sortOrder,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = now()
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectCategoryChildrenByParentId" resultMap="BaseResultMap" parameterType="int">
-    select
-    <include refid="Base_Column_List"/>
-    from mmall_category
-    where parent_id = #{parentId}
+  <select id="queryAll"  resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM baihui_category
+    WHERE status = 1
+    ORDER BY parent_id , sort_order
   </select>
 </mapper>

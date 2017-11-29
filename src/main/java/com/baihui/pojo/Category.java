@@ -15,16 +15,22 @@ public class Category {
 
     private Date createTime;
 
+    private String createUser;
+
     private Date updateTime;
 
-    public Category(Integer id, Integer parentId, String name, Boolean status, Integer sortOrder, Date createTime, Date updateTime) {
+    private String updateUser;
+
+    public Category(Integer id, Integer parentId, String name, Boolean status, Integer sortOrder, Date createTime, String createUser, Date updateTime, String updateUser) {
         this.id = id;
         this.parentId = parentId;
         this.name = name;
         this.status = status;
         this.sortOrder = sortOrder;
         this.createTime = createTime;
+        this.createUser = createUser;
         this.updateTime = updateTime;
+        this.updateUser = updateUser;
     }
 
     public Category() {
@@ -79,6 +85,14 @@ public class Category {
         this.createTime = createTime;
     }
 
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
     public Date getUpdateTime() {
         return updateTime;
     }
@@ -87,21 +101,11 @@ public class Category {
         this.updateTime = updateTime;
     }
 
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Category category = (Category) o;
-
-        return !(id != null ? !id.equals(category.id) : category.id != null);
-
+    public String getUpdateUser() {
+        return updateUser;
     }
 
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser == null ? null : updateUser.trim();
     }
 }
