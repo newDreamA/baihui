@@ -21,15 +21,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from mmall_user
+    from baihui_user
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from mmall_user
+    delete from baihui_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.baihui.pojo.User" >
-    insert into mmall_user (id, username, password, 
+    insert into baihui_user (id, username, password,
       email, phone, question, 
       answer, role, create_time, 
       update_time)
@@ -39,7 +39,7 @@
       now())
   </insert>
   <insert id="insertSelective" parameterType="com.baihui.pojo.User" >
-    insert into mmall_user
+    insert into baihui_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -106,7 +106,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.baihui.pojo.User" >
-    update mmall_user
+    update baihui_user
     <set >
       <if test="username != null" >
         username = #{username,jdbcType=VARCHAR},
@@ -139,7 +139,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.baihui.pojo.User" >
-    update mmall_user
+    update baihui_user
     set username = #{username,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
@@ -153,12 +153,12 @@
   </update>
 
   <select id="checkUsername" resultType="int" parameterType="string">
-     select count(1) from mmall_user
+     select count(1) from baihui_user
      where username = #{username}
   </select>
 
   <select id="checkUserEmail" resultType="int" parameterType="string">
-    select count(1) from mmall_user
+    select count(1) from baihui_user
     where email = #{email}
   </select>
   
@@ -166,19 +166,19 @@
 
     select
     <include refid="Base_Column_List" />
-    from mmall_user
+    from baihui_user
     where username=#{username} and password = #{password}
 
   </select>
 
   <select id="selectQuestionByUsername" parameterType="string" resultType="string">
-    select question from mmall_user
+    select question from baihui_user
     where username =#{username}
   </select>
 
   <select id="checkAnswer" parameterType="java.util.Map" resultType="int">
     select count(1)
-    from mmall_user
+    from baihui_user
     where username = #{username}
     and question = #{question}
     and  answer = #{answer}
@@ -186,7 +186,7 @@
 
 
   <update id="updatePasswordByUsername" parameterType="map">
-    update mmall_user
+    update baihui_user
     SET password = #{passwordNew},update_time = now()
     where username = #{username}
   </update>
@@ -194,14 +194,14 @@
   <select id="checkPassword" resultType="int" parameterType="map">
     SELECT
     count(1)
-    from mmall_user
+    from baihui_user
     where password = #{password}
     and id = #{userId}
   </select>
 
 
   <select id="checkEmailByUserId" resultType="int" parameterType="map">
-    select count(1) from mmall_user
+    select count(1) from baihui_user
     where email = #{email}
     and id != #{userId}
   </select>
