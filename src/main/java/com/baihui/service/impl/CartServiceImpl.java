@@ -8,6 +8,7 @@ import com.baihui.dao.ProductMapper;
 import com.baihui.pojo.Cart;
 import com.baihui.pojo.Product;
 import com.baihui.service.ICartService;
+import com.baihui.service.IOrderService;
 import com.baihui.util.BigDecimalUtil;
 import com.baihui.util.PropertiesUtil;
 import com.baihui.vo.CartProductVo;
@@ -29,6 +30,9 @@ public class CartServiceImpl implements ICartService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    IOrderService orderService;
+
     public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count) {
         if (productId == null || count == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
@@ -44,6 +48,7 @@ public class CartServiceImpl implements ICartService {
             cartItem.setProductId(productId);
             cartItem.setUserId(userId);
             cartMapper.insert(cartItem);
+            orderService.createOrder(userId);
         } else {
             //这个产品已经在购物车里了.
             //如果产品已存在,数量相加
@@ -117,31 +122,34 @@ public class CartServiceImpl implements ICartService {
                     cartProductVo.setProductStatus(product.getStatus());
                     cartProductVo.setProductPrice(product.getPrice());
                     cartProductVo.setProductStock(product.getStock());
+                    cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_SUCCESS);
+                    int  buyLimitCount = cartItem.getQuantity();
+
                     //判断库存
-                    int buyLimitCount = 0;
-                    if (product.getStock() >= cartItem.getQuantity()) {
-                        //库存充足的时候
-                        buyLimitCount = cartItem.getQuantity();
-                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_SUCCESS);
-                    } else {
-                        buyLimitCount = product.getStock();
-                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_FAIL);
-                        //购物车中更新有效库存
-                        Cart cartForQuantity = new Cart();
-                        cartForQuantity.setId(cartItem.getId());
-                        cartForQuantity.setQuantity(buyLimitCount);
-                        cartMapper.updateByPrimaryKeySelective(cartForQuantity);
-                    }
-                    cartProductVo.setQuantity(buyLimitCount);
-                    //计算总价
-                    cartProductVo.setProductTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(), cartProductVo.getQuantity()));
-                    cartProductVo.setProductChecked(cartItem.getChecked());
+//                    int buyLimitCount = 0;
+//                    if (product.getStock() >= cartItem.getQuantity()) {
+//                        //库存充足的时候
+//                        buyLimitCount = cartItem.getQuantity();
+//                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_SUCCESS);
+//                    } else {
+//                        buyLimitCount = product.getStock();
+//                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_FAIL);
+//                        //购物车中更新有效库存
+//                        Cart cartForQuantity = new Cart();
+//                        cartForQuantity.setId(cartItem.getId());
+//                        cartForQuantity.setQuantity(buyLimitCount);
+//                        cartMapper.updateByPrimaryKeySelective(cartForQuantity);
+//                    }
+                     cartProductVo.setQuantity(buyLimitCount);
+//                    //计算总价
+//                    cartProductVo.setProductTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(), cartProductVo.getQuantity()));
+//                    cartProductVo.setProductChecked(cartItem.getChecked());
                 }
 
-                if (cartItem.getChecked() == Const.Cart.CHECKED) {
-                    //如果已经勾选,增加到整个的购物车总价中
-                    cartTotalPrice = BigDecimalUtil.add(cartTotalPrice.doubleValue(), cartProductVo.getProductTotalPrice().doubleValue());
-                }
+//                if (cartItem.getChecked() == Const.Cart.CHECKED) {
+//                    //如果已经勾选,增加到整个的购物车总价中
+//                    cartTotalPrice = BigDecimalUtil.add(cartTotalPrice.doubleValue(), cartProductVo.getProductTotalPrice().doubleValue());
+//                }
                 cartProductVoList.add(cartProductVo);
             }
         }
