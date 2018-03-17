@@ -75,10 +75,10 @@ public class ProductServiceImpl implements IProductService {
                 }
                 return ServerResponse.createBySuccess("更新产品失败");
             }else{
-                int productId = productMapper.insert(dbProduct);
-                productExtWithBLOBs.setProductId(productId);
+                int rownum = productMapper.insert(dbProduct);
+                productExtWithBLOBs.setProductId(dbProduct.getId());
                 int rowDetailCount = productExtMapper.insert(productExtWithBLOBs);
-                if(productId > 0 && rowDetailCount>0){
+                if(rownum > 0 && rowDetailCount>0){
                     return ServerResponse.createBySuccess("新增产品成功");
                 }
                 return ServerResponse.createBySuccess("新增产品失败");
@@ -110,7 +110,7 @@ public class ProductServiceImpl implements IProductService {
         productListVo.setId(product.getId());
         productListVo.setName(product.getName());
         productListVo.setCategoryId(product.getCategoryId());
-        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.happymmall.com/"));
+        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.ycbaihui.cn/"));
         productListVo.setMainImage(product.getMainImage());
         productListVo.setPrice(product.getPrice());
         productListVo.setSubtitle(product.getSubtitle());
@@ -154,7 +154,7 @@ public class ProductServiceImpl implements IProductService {
         productDetailVo.setStatus(product.getStatus());
         productDetailVo.setStock(product.getStock());
 
-        productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.happymmall.com/"));
+        productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.ycbaihui.cn/"));
 
         Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
         if(category == null){
